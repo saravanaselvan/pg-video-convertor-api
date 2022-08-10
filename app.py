@@ -8,6 +8,7 @@ from flask_cors import CORS
 from db import db, migrate
 from resources.auth import Login
 from resources.user import UserRegister
+from resources.pipe_count import PipeCount
 
 from dotenv import load_dotenv
 
@@ -42,6 +43,7 @@ api = Api(app)
 jwt = JWTManager(app)
 
 api.add_resource(VideoConversion, '/api/video_conversions')
+api.add_resource(PipeCount, '/api/pipe_count')
 api.add_resource(UserRegister, '/api/register')
 api.add_resource(Login, '/api/login')
 
