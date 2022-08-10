@@ -6,9 +6,6 @@ from flask_restful import Api
 from flask_cors import CORS
 
 from db import db, migrate
-from resources.calc import Calc
-from resources.download_result import DownloadResult
-from resources.uploaded_stocks import UploadedStocks
 from resources.auth import Login
 from resources.user import UserRegister
 
