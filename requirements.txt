@@ -1,0 +1,10 @@
+Flask
+Flask-RESTful
+Flask-JWT-Extended
+Flask-SQLAlchemy
+Flask-Migrate
+uwsgi
+flask-cors
+python-dotenv
+pymysql
+jsonschema
