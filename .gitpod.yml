@@ -4,7 +4,10 @@
 image:
   file: .gitpod.dockerfile
 tasks:
-  - init: pip install -r requirements.txt
-    command: python app.py
+  - init: |
+      python3 -m venv venv
+      . venv/bin/activate
+      python3 -m pip install -r requirements.txt
+    command: apt-get ffmpeg
 
 

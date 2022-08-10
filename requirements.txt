@@ -8,3 +8,4 @@ flask-cors
 python-dotenv
 pymysql
 jsonschema
+Werkzeug~=2.0.0
