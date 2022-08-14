@@ -106,7 +106,17 @@
       "PRE_NMS_TOPK_TEST": 1000,
       "POST_NMS_TOPK_TRAIN": 1000,
       "POST_NMS_TOPK_TEST": 1000,
-      "NMS_THRESH": 0.7
+      "NMS_THRESH": 0.7,
+      "CONV_DIMS": [
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512,
+        512
+      ]      
     },
     "ROI_HEADS": {
       "NAME": "StandardROIHeads",
@@ -128,7 +138,8 @@
       "POSITIVE_FRACTION": 0.2,
       "SCORE_THRESH_TEST": 0.1,
       "NMS_THRESH_TEST": 0.2,
-      "PROPOSAL_APPEND_GT": true
+      "PROPOSAL_APPEND_GT": true,
+      "USE_FED_LOSS": false
     },
     "ROI_BOX_HEAD": {
       "NAME": "FastRCNNConvFCHead",
@@ -150,7 +161,10 @@
       "CONV_DIM": 256,
       "NORM": "",
       "CLS_AGNOSTIC_BBOX_REG": false,
-      "TRAIN_ON_PRED_BOXES": false
+      "TRAIN_ON_PRED_BOXES": false,
+      "USE_FED_LOSS": false,
+      "USE_SIGMOID_CE": false,
+      "FED_LOSS_NUM_CLASSES": 50
     },
     "ROI_BOX_CASCADE_HEAD": {
       "BBOX_REG_WEIGHTS": [
