@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report</title>
 </head>
 <body>
-    <h1>Summary</h1>
-    <h2>Input</h2>
-    <div>input_file_name: {{ original_uploaded_file_name }}</div>
-    <div>params:</div>
-    <div>&nbsp;&nbsp; frame_rate: {{param_frame_rate}}</div>
-    <div>&nbsp;&nbsp; output_format: {{param_output_format}}</div>
-    <div>&nbsp;&nbsp; exif_info_captured: 
-        {%- if param_is_exif_info_captured %} 
-            Yes 
-        {%- else %} 
-            No
-        {%- endif %}
-    </div>
-    <br /><br />
-    <h2>Output</h2>
-    <img src="data:image/png;base64,{{ img_string }}"/>
+  <h1>Summary</h1>
+  <h2>Input</h2>
+  <div>input_file_name: {{ original_uploaded_file_name }}</div>
+  <div>params:</div>
+  <div>&nbsp;&nbsp; frame_rate: {{param_frame_rate}}</div>
+  <div>&nbsp;&nbsp; output_format: {{param_output_format}}</div>
+  <div>&nbsp;&nbsp; exif_info_captured: 
+    {%- if param_is_exif_info_captured %} 
+        Yes 
+    {%- else %} 
+        No
+    {%- endif %}
+  </div>
+  <br /><br />
+  <h2>Output</h2>
+  <img src="data:image/png;base64,{{ img_string }}"/>
+  <br /><br />
+  {%- if param_is_exif_info_captured %} 
+    <ul>
+      {% for key in exif_json_dict %}
+        <li>
+          <span><strong>{{key}} :&nbsp;</strong></span>
+          {{ exif_json_dict[key] }}
+        </li>
+      {% endfor %}
+    </ul>
+  {%- endif %}
 </body>
 </html>
