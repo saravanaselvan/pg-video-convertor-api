@@ -76,9 +76,10 @@ def generate_pdf_report(
         param_output_format,
         param_is_exif_info_captured):
     exif_json = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/exif.json"
-
-    with open(exif_json, 'r') as file:
-        exif_json_dict = json.loads(file.read())
+    exif_json_dict = {}
+    if param_is_exif_info_captured:
+        with open(exif_json, 'r') as file:
+            exif_json_dict = json.loads(file.read())
 
     rendered = render_template(
         "report_template.html",

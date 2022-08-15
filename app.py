@@ -12,7 +12,7 @@ from resources.pipe_count import PipeCount
 
 from dotenv import load_dotenv
 
-from resources.video_conversion import VideoConversion
+from resources.video_conversion import VideoConversion, VideoConversionsList, DownloadReport
 
 load_dotenv()
 
@@ -43,6 +43,8 @@ api = Api(app)
 jwt = JWTManager(app)
 
 api.add_resource(VideoConversion, '/api/video_conversions')
+api.add_resource(DownloadReport, '/api/download_report/<int:id>')
+api.add_resource(VideoConversionsList, '/api/video_conversions_list')
 api.add_resource(PipeCount, '/api/pipe_count')
 api.add_resource(UserRegister, '/api/register')
 api.add_resource(Login, '/api/login')

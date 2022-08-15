@@ -8,7 +8,7 @@ import os
 import werkzeug
 import datetime
 from flask_restful import Resource, reqparse
-from flask import request, current_app, json, jsonify
+from flask import request, current_app, json, jsonify, send_file
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from db import db
@@ -70,3 +70,31 @@ class VideoConversion(Resource):
             }
 
         return "Only mp4 or wav file type is accepted", 500
+
+
+class VideoConversionsList(Resource):
+    parser = reqparse.RequestParser()
+
+    @jwt_required()
+    def get(self):
+        video_conversions = VideoConversionModel.query.filter_by(
+            user_id=get_jwt_identity()).order_by(VideoConversionModel.created_at.desc())
+        return {'video_conversions': [video_conversion.json() for video_conversion in video_conversions]}
+
+
+class DownloadReport(Resource):
+
+    @jwt_required()
+    def get(self, id):
+        args = request.args
+        type = args.get('type')
+
+        video_conversion = VideoConversionModel.query.filter_by(
+            id=id, user_id=get_jwt_identity()).first()
+
+        if type == 'pdf' or type == None:
+            file_path = video_conversion.output_pdf_file_path
+        elif type == 'yaml':
+            file_path = video_conversion.output_yaml_file_path
+
+        return send_file(file_path, as_attachment=True)

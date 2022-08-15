@@ -49,6 +49,22 @@ class VideoConversionModel(db.Model):
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
+    def json(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'original_uploaded_file_name': self.original_uploaded_file_name,
+            'uploaded_file_name': self.uploaded_file_name,
+            'output_yaml_file_name': self.output_yaml_file_name,
+            'output_yaml_file_path': self.output_yaml_file_path,
+            'output_pdf_file_name': self.output_pdf_file_name,
+            'output_pdf_file_path': self.output_pdf_file_path,
+            'param_output_format': self.param_output_format,
+            'param_frame_rate': self.param_frame_rate,
+            'param_is_exif_info_captured': self.param_is_exif_info_captured,
+            'created_at': str(self.created_at)
+        }
+
     def __params_dict__(self):
         return {
             "input_file_name": self.original_uploaded_file_name,
