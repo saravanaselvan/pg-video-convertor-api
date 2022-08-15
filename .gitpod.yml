@@ -6,6 +6,7 @@ image:
 tasks:
   - name: setup
     command: |
+      sudo apt install ffmpeg &&
       sudo apt-get update &&
       sudo apt-get install wkhtmltopdf &&
       sudo apt install libimage-exiftool-perl &&
