@@ -1,0 +1,14 @@
+ These two installations not added to requirements.txt. Install them separately.
+ 
+ python3 -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+ python3 -m pip install git+https://github.com/facebookresearch/detectron2
+
+ RabbitMQ:
+ sudo apt-get install rabbitmq-server -y --fix-missing
+
+ sudo rabbitmq-server - Start server
+ sudo rabbitmqctl status
+ sudo rabbitmqctl stop
+
+Run Worker:
+celery -A app.celery  worker --loglevel=info

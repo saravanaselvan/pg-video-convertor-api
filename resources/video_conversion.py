@@ -14,6 +14,7 @@ from werkzeug.utils import secure_filename
 from db import db
 import subprocess as sp
 import cv2
+from tasks.video_conversion_task import process_video
 
 
 ALLOWED_EXTENSIONS = {'mp4', 'mov'}
@@ -52,6 +53,7 @@ class VideoConversion(Resource):
 
             try:
                 video_conversion = VideoConversionModel(
+                    status="PENDING",
                     original_uploaded_file_name=original_uploaded_file_name,
                     uploaded_file_name=uploaded_file_name,
                     output_yaml_file_name="params.yaml",
@@ -63,7 +65,8 @@ class VideoConversion(Resource):
             except BaseException as e:
                 return f'{e}'
 
-            video_conversion.process_video()
+            process_video.delay(
+                video_conversion.id, current_app.config['OUTPUT_FOLDER'], current_app.config['UPLOAD_FOLDER'])
 
             return {
                 "id": video_conversion.id
@@ -98,3 +101,26 @@ class DownloadReport(Resource):
             file_path = video_conversion.output_yaml_file_path
 
         return send_file(file_path, as_attachment=True)
+
+
+class DownloadVideo(Resource):
+
+    @jwt_required()
+    def get(self, id):
+        video_conversion = VideoConversionModel.query.filter_by(
+            id=id, user_id=get_jwt_identity()).first()
+
+        input_file_path = os.path.join(
+            current_app.config['UPLOAD_FOLDER'], video_conversion.uploaded_file_name)
+
+        return send_file(input_file_path, as_attachment=True)
+
+
+class SingleVideoConversion(Resource):
+
+    @jwt_required()
+    def get(self, id):
+        video_conversion = VideoConversionModel.query.filter_by(
+            id=id, user_id=get_jwt_identity()).first()
+
+        return {'video_conversion': video_conversion.json()}

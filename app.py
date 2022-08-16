@@ -11,8 +11,9 @@ from resources.user import UserRegister
 from resources.pipe_count import PipeCount
 
 from dotenv import load_dotenv
-
-from resources.video_conversion import VideoConversion, VideoConversionsList, DownloadReport
+from resources.video_conversion import VideoConversion, VideoConversionsList, DownloadReport, DownloadVideo, SingleVideoConversion
+from celery_util import make_celery
+from base import celery
 
 load_dotenv()
 
@@ -41,9 +42,11 @@ os.makedirs(output_dir, exist_ok=True)
 api = Api(app)
 
 jwt = JWTManager(app)
-
+make_celery(app, celery)
 api.add_resource(VideoConversion, '/api/video_conversions')
+api.add_resource(SingleVideoConversion, '/api/video_conversions/<int:id>')
 api.add_resource(DownloadReport, '/api/download_report/<int:id>')
+api.add_resource(DownloadVideo, '/api/download_video/<int:id>')
 api.add_resource(VideoConversionsList, '/api/video_conversions_list')
 api.add_resource(PipeCount, '/api/pipe_count')
 api.add_resource(UserRegister, '/api/register')

@@ -58,7 +58,7 @@ def generate_yaml_params(params_dict, folder_name):
     yaml_file_path = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/params.yaml"
 
     with open(yaml_file_path, 'w') as file:
-        documents = yaml.dump(params_dict, file)
+        documents = yaml.dump(params_dict, file, sort_keys=False)
 
     return yaml_file_path
 
