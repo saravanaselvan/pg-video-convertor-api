@@ -1,3 +1,5 @@
+ sudo apt-get install python3-pymysql
+ 
  These two installations not added to requirements.txt. Install them separately.
  
  python3 -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
