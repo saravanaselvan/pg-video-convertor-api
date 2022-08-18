@@ -99,6 +99,8 @@ class DownloadReport(Resource):
             file_path = video_conversion.output_pdf_file_path
         elif type == 'yaml':
             file_path = video_conversion.output_yaml_file_path
+        elif type == 'json':
+            file_path = f"private/output_files/{video_conversion.id}/exif.json"
 
         return send_file(file_path, as_attachment=True)
 
