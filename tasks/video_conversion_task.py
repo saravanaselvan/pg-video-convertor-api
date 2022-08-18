@@ -20,6 +20,7 @@ def process_video(id, output_folder, upload_folder):
         frames_dir, f"out%d.{video_conversion.param_output_format}")
 
     # Create params.yaml
+    print(video_conversion.params_dict())
     yaml_file_path = generate_yaml_params(
         video_conversion.params_dict(), video_conversion.id)
 
@@ -43,6 +44,7 @@ def process_video(id, output_folder, upload_folder):
         video_conversion.original_uploaded_file_name,
         video_conversion.param_frame_rate,
         video_conversion.param_output_format,
+        video_conversion.param_quality,
         video_conversion.param_is_exif_info_captured
     )
 

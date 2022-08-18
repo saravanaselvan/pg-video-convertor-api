@@ -77,6 +77,7 @@ def generate_pdf_report(
         original_uploaded_file_name,
         param_frame_rate,
         param_output_format,
+        param_quality,
         param_is_exif_info_captured):
     exif_json = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/exif.json"
     exif_json_dict = {}
@@ -91,6 +92,7 @@ def generate_pdf_report(
         param_frame_rate=param_frame_rate,
         param_output_format=param_output_format,
         param_is_exif_info_captured=param_is_exif_info_captured,
+        param_quality=param_quality,
         exif_json_dict=exif_json_dict)
     pdf = pdfkit.from_string(
         rendered, f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/report.pdf")
