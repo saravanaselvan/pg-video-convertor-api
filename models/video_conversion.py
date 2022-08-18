@@ -5,8 +5,6 @@ import os
 from .user import UserModel
 from flask import current_app
 
-from services.video_report.video_report import generate_panorama_img, generate_yaml_params, generate_pdf_report, extract_frames_from_video, exif_info
-
 
 class VideoConversionModel(db.Model):
     __tablename__ = 'video_conversions'
@@ -26,6 +24,7 @@ class VideoConversionModel(db.Model):
     param_is_exif_info_captured = db.Column(db.Boolean)
     output_exif_file_name = db.Column(db.String(255))
     output_exif_file_path = db.Column(db.String(255))
+    param_quality = db.Column(db.Integer)
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 
@@ -37,6 +36,7 @@ class VideoConversionModel(db.Model):
                  param_output_format,
                  param_frame_rate,
                  param_is_exif_info_captured,
+                 param_quality,
                  output_yaml_file_path="",
                  output_pdf_file_name="",
                  output_pdf_file_path=""
@@ -52,6 +52,7 @@ class VideoConversionModel(db.Model):
         self.param_output_format = param_output_format
         self.param_frame_rate = param_frame_rate
         self.param_is_exif_info_captured = param_is_exif_info_captured
+        self.param_quality = param_quality
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
@@ -69,6 +70,7 @@ class VideoConversionModel(db.Model):
             'param_output_format': self.param_output_format,
             'param_frame_rate': self.param_frame_rate,
             'param_is_exif_info_captured': self.param_is_exif_info_captured,
+            'param_quality': self.param_quality,
             'output_exif_file_path': self.output_exif_file_path,
             'created_at': str(self.created_at)
         }
@@ -79,6 +81,7 @@ class VideoConversionModel(db.Model):
             "params": {
                 "frame_rate": self.param_frame_rate,
                 "output_format": self.param_output_format,
+                "quality": self.param_quality,
                 "exif_info_captured": "Yes" if self.param_is_exif_info_captured == 'true' else "No"
             }
         }

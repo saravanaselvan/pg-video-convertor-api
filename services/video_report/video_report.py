@@ -24,9 +24,9 @@ def exif_info(input_video_path, output_dir):
     return exif_file_path
 
 
-def extract_frames_from_video(input_video_path, output_frames_path, fps):
+def extract_frames_from_video(input_video_path, output_frames_path, fps, quality):
     convertCMD = ["ffmpeg", '-i', input_video_path,
-                  '-vf', f'fps={fps}', output_frames_path]
+                  '-vf', f'fps={fps}', f'-qscale:v {quality}', output_frames_path]
 
     executeOrder66 = sp.Popen(convertCMD)
 

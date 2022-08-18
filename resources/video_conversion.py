@@ -2,7 +2,6 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from models.video_conversion import VideoConversionModel
-from services.video_report.video_report import generate_panorama_img, generate_yaml_params, generate_pdf_report, exif_info
 
 import os
 import werkzeug
@@ -34,6 +33,7 @@ class VideoConversion(Resource):
     parser.add_argument('output_format', type=str, required=True,
                         help="Output Format required")
     parser.add_argument('is_exif_info_captured', type=str)
+    parser.add_argument('quality', type=str)
 
     @jwt_required()
     def post(self):
@@ -43,6 +43,7 @@ class VideoConversion(Resource):
         param_frame_rate = data['frame_rate']
         param_output_format = data['output_format']
         param_is_exif_info_captured = data['is_exif_info_captured'] == 'true'
+        param_quality = data['quality']
 
         if allowed_file(file.filename):
             original_uploaded_file_name = secure_filename(file.filename)
@@ -60,6 +61,7 @@ class VideoConversion(Resource):
                     param_output_format=param_output_format,
                     param_frame_rate=param_frame_rate,
                     param_is_exif_info_captured=param_is_exif_info_captured,
+                    param_quality=param_quality
                 )
                 video_conversion.save_to_db()
             except BaseException as e:

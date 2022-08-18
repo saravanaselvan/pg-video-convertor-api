@@ -30,7 +30,10 @@ def process_video(id, output_folder, upload_folder):
         exif_file_path = exif_info(input_video_path, output_dir)
 
     extract_frames_from_video(
-        input_video_path, output_frames_path, video_conversion.param_frame_rate)
+        input_video_path, 
+        output_frames_path, 
+        video_conversion.param_frame_rate,
+        video_conversion.param_quality)
 
     file_name = f"{video_conversion.id}.{video_conversion.param_output_format}"
     generate_panorama_img(frames_dir, output_dir, file_name)
