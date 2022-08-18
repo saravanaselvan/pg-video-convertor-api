@@ -24,6 +24,8 @@ class VideoConversionModel(db.Model):
     param_output_format = db.Column(db.String(255))
     param_frame_rate = db.Column(db.Float(precision=2))
     param_is_exif_info_captured = db.Column(db.Boolean)
+    output_exif_file_name = db.Column(db.String(255))
+    output_exif_file_path = db.Column(db.String(255))
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
 
@@ -67,7 +69,7 @@ class VideoConversionModel(db.Model):
             'param_output_format': self.param_output_format,
             'param_frame_rate': self.param_frame_rate,
             'param_is_exif_info_captured': self.param_is_exif_info_captured,
-            'output_exif_file_path': f"private/output_files/{self.id}/exif.json" if(self.param_is_exif_info_captured) else '',
+            'output_exif_file_path': self.output_exif_file_path,
             'created_at': str(self.created_at)
         }
 

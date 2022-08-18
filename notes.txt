@@ -11,6 +11,7 @@ sudo apt update (without this the next command errors with not found)
 sudo apt install python3-pip
 sudo apt-get update
 sudo apt-get install python3-venv
+sudo apt install supervisor
 python3 -m venv pg-venv
 . pg-venv/bin/activate
 python3 -m pip install -r requirements.txt
@@ -44,8 +45,11 @@ Request entity too large error:
 sudo nano /etc/nginx/nginx.conf -> client_max_body_size 100M; (under http)
 sudo service nginx restart
 
-
-
+Supervisor
+sudo apt install supervisor
+sudo supervisorctl reread
+sudo supervisorctl reload
+sudo service supervisor restart
 
 These two installations not added to requirements.txt. Install them separately.
 

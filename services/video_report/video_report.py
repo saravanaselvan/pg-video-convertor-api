@@ -10,15 +10,18 @@ from flask import current_app, render_template
 
 
 def exif_info(input_video_path, output_dir):
+    exif_file_path = f"{output_dir}/exif.json"
     exif_tool_cmd = ["exiftool", "-j", input_video_path,
-                     ">>", f"{output_dir}/exif.json"]
+                     ">>", exif_file_path]
 
     output = sp.run(exif_tool_cmd, capture_output=True)
     json_dict = json.loads(output.stdout.decode("utf-8"))[0]
 
-    with open(f"{output_dir}/exif.json", 'w') as file:
+    with open(exif_file_path, 'w') as file:
         file.write(json.dumps(json_dict, indent=2))
         file.close()
+
+    return exif_file_path
 
 
 def extract_frames_from_video(input_video_path, output_frames_path, fps):

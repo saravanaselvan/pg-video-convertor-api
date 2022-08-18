@@ -25,8 +25,9 @@ def process_video(id, output_folder, upload_folder):
 
     print(f"Started processing {video_conversion.original_uploaded_file_name}")
 
+    exif_file_path = ""
     if video_conversion.param_is_exif_info_captured:
-        exif_info(input_video_path, output_dir)
+        exif_file_path = exif_info(input_video_path, output_dir)
 
     extract_frames_from_video(
         input_video_path, output_frames_path, video_conversion.param_frame_rate)
@@ -45,6 +46,8 @@ def process_video(id, output_folder, upload_folder):
     video_conversion.output_pdf_file_name = "report.pdf"
     video_conversion.output_pdf_file_path = f"{output_folder}/{video_conversion.id}/report.pdf"
     video_conversion.output_yaml_file_path = yaml_file_path
+    video_conversion.output_exif_file_name = "exif.json"
+    video_conversion.output_exif_file_path = exif_file_path
     video_conversion.status = "COMPLETED"
 
     video_conversion.save_to_db()
