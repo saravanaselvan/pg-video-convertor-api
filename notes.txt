@@ -1,16 +1,54 @@
- sudo apt-get install python3-pymysql
- 
- These two installations not added to requirements.txt. Install them separately.
- 
- python3 -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
- python3 -m pip install git+https://github.com/facebookresearch/detectron2
+git clone https://github.com/saravanaselvan/pg-video-convertor-api.git
 
- RabbitMQ:
- sudo apt-get install rabbitmq-server -y --fix-missing
+cd pg-video-convertor-api
+- create .env and config.py file inside /home/ubuntu/private directory
+- Update RDS url in both the files
 
- sudo rabbitmq-server - Start server
- sudo rabbitmqctl status
- sudo rabbitmqctl stop
+ln -s /home/ubuntu/private/.env /home/ubuntu/app/pg-video-convertor-api/.env
+ln -s /home/ubuntu/private/config.py /home/ubuntu/app/pg-video-convertor-api/config.py
 
-Run Worker:
-celery -A app.celery  worker --loglevel=info
+sudo apt update (without this the next command errors with not found)
+sudo apt install python3-pip
+sudo apt-get update
+sudo apt-get install python3-venv
+python3 -m venv pg-venv
+. pg-venv/bin/activate
+python3 -m pip install -r requirements.txt
+
+sudo apt-get install nginx &&
+sudo apt-get install gunicorn &&
+sudo apt install ffmpeg &&
+sudo apt-get install wkhtmltopdf &&
+sudo apt install libimage-exiftool-perl &&
+sudo apt-get install rabbitmq-server -y --fix-missing
+
+sudo rabbitmq-server - Start server
+sudo rabbitmqctl status
+sudo rabbitmqctl stop
+
+Run Worker inside the project folder with pg-venv:
+celery -A app.celery  worker -f ~/private/celery.log --loglevel=info
+
+Create pg-video-conversion in /etc/nginx/sites-enabled with below content:
+
+server {
+	listen 80;
+	server_name 13.126.108.37, ec2-13-126-108-37.ap-south-1.compute.amazonaws.com;
+
+	location / {
+		proxy_pass http://127.0.0.1:8000;
+	}
+}
+
+Request entity too large error:
+sudo nano /etc/nginx/nginx.conf -> client_max_body_size 100M; (under http)
+sudo service nginx restart
+
+
+
+
+These two installations not added to requirements.txt. Install them separately.
+
+python3 -m pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+python3 -m pip install git+https://github.com/facebookresearch/detectron2
+

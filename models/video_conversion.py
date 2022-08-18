@@ -67,6 +67,7 @@ class VideoConversionModel(db.Model):
             'param_output_format': self.param_output_format,
             'param_frame_rate': self.param_frame_rate,
             'param_is_exif_info_captured': self.param_is_exif_info_captured,
+            'output_exif_file_path': f"private/output_files/{self.id}/exif.json" if(self.param_is_exif_info_captured) else '',
             'created_at': str(self.created_at)
         }
 
