@@ -85,8 +85,7 @@ class VideoConversionsList(Resource):
         video_conversions = VideoConversionModel.query.filter_by(
             user_id=get_jwt_identity()).order_by(VideoConversionModel.created_at.desc())
         return {
-                    'video_conversions': [video_conversion.json() for video_conversion in video_conversions],
-                    'count': len(video_conversions)
+                    'video_conversions': [video_conversion.json() for video_conversion in video_conversions]
                 }
 
 
