@@ -6,3 +6,4 @@ config.py
 private
 venv
 pg-venv
+services/predict_detect/*.pth
