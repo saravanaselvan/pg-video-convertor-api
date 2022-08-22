@@ -17,8 +17,15 @@ def exif_info(input_video_path, output_dir):
     output = sp.run(exif_tool_cmd, capture_output=True)
     json_dict = json.loads(output.stdout.decode("utf-8"))[0]
 
+    exif_dict = {}
+    key_list = ["FileType", "Duration", "FileSize", "BitDepth", "VideoFrameRate", "Rotation", "XResolution", "YResolution"]    
+
+    for key in json_dict:
+        if key in key_list:
+            exif_dict[key] = json_dict[key]
+
     with open(exif_file_path, 'w') as file:
-        file.write(json.dumps(json_dict, indent=2))
+        file.write(json.dumps(exif_dict, indent=2))
         file.close()
 
     return exif_file_path
