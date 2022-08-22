@@ -37,22 +37,27 @@ def process_video(id, output_folder, upload_folder):
         video_conversion.param_quality)
 
     file_name = f"{video_conversion.id}.{video_conversion.param_output_format}"
-    generate_panorama_img(frames_dir, output_dir, file_name)
-    generate_pdf_report(
-        f"{output_dir}/{file_name}",
-        video_conversion.id,
-        video_conversion.original_uploaded_file_name,
-        video_conversion.param_frame_rate,
-        video_conversion.param_output_format,
-        video_conversion.param_quality,
-        video_conversion.param_is_exif_info_captured
-    )
+    error = generate_panorama_img(frames_dir, output_dir, file_name)
 
-    video_conversion.output_pdf_file_name = "report.pdf"
-    video_conversion.output_pdf_file_path = f"{output_folder}/{video_conversion.id}/report.pdf"
-    video_conversion.output_yaml_file_path = yaml_file_path
-    video_conversion.output_exif_file_name = "exif.json"
-    video_conversion.output_exif_file_path = exif_file_path
-    video_conversion.status = "COMPLETED"
+    if error == '':
+        generate_pdf_report(
+            f"{output_dir}/{file_name}",
+            video_conversion.id,
+            video_conversion.original_uploaded_file_name,
+            video_conversion.param_frame_rate,
+            video_conversion.param_output_format,
+            video_conversion.param_quality,
+            video_conversion.param_is_exif_info_captured,
+            video_conversion.created_at
+        )
+
+        video_conversion.output_pdf_file_name = "report.pdf"
+        video_conversion.output_pdf_file_path = f"{output_folder}/{video_conversion.id}/report.pdf"
+        video_conversion.output_yaml_file_path = yaml_file_path
+        video_conversion.output_exif_file_name = "exif.json"
+        video_conversion.output_exif_file_path = exif_file_path
+        video_conversion.status = "COMPLETED"
+    else:
+        video_conversion.status = error
 
     video_conversion.save_to_db()

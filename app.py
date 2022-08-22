@@ -11,7 +11,7 @@ from resources.user import UserRegister
 # from resources.pipe_count import PipeCount
 
 from dotenv import load_dotenv
-from resources.video_conversion import VideoConversion, VideoConversionsList, DownloadReport, DownloadVideo, SingleVideoConversion
+from resources.video_conversion import VideoConversion, VideoConversionsList, DownloadReport, DownloadVideo, SingleVideoConversion, ReportPreview
 from celery_util import make_celery
 from base import celery
 
@@ -51,6 +51,7 @@ api.add_resource(VideoConversionsList, '/api/video_conversions_list')
 # api.add_resource(PipeCount, '/api/pipe_count')
 api.add_resource(UserRegister, '/api/register')
 api.add_resource(Login, '/api/login')
+api.add_resource(ReportPreview, '/api/report_preview/<int:id>')
 
 db.init_app(app)
 migrate.init_app(app, db)

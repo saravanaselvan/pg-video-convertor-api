@@ -54,12 +54,19 @@ def generate_panorama_img(frames_dir, output_dir, file_name):
 
     (status, result) = stitcher.stitch(images)
 
+    error = ''
     if status == cv2.STITCHER_OK:
         print("Panorama success")
         cv2.imwrite(f"{output_dir}/{file_name}", result)
     else:
-        print("Panorama failed" + str(status))
+        if status == cv2.STITCHER_ERR_NEED_MORE_IMGS:
+            error = "Need more images - ERR_NEED_MORE_IMGS"
+        elif status == cv2.STITCHER_ERR_HOMOGRAPHY_EST_FAIL:
+            error = "Failed - ERR_NEED_MORE_IMGS"
+        elif  status == cv2.STITCHER_ERR_CAMERA_PARAMS_ADJUST_FAIL:
+            error = "Failed - STITCHER_ERR_CAMERA_PARAMS_ADJUST_FAIL"
 
+    return error
 
 def generate_yaml_params(params_dict, folder_name):
     yaml_file_path = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/params.yaml"
@@ -82,21 +89,26 @@ def generate_pdf_report(
         param_frame_rate,
         param_output_format,
         param_quality,
-        param_is_exif_info_captured):
+        param_is_exif_info_captured,
+        created_at):
     exif_json = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/exif.json"
     exif_json_dict = {}
     if param_is_exif_info_captured:
         with open(exif_json, 'r') as file:
             exif_json_dict = json.loads(file.read())
 
+    key_list = ["FileType", "Duration", "FileSize", "BitDepth", "VideoFrameRate", "Rotation", "XResolution", "YResolution"]
     rendered = render_template(
         "report_template.html",
         img_string=image_file_path_to_base64_string(panorama_img_path),
+        logo=image_file_path_to_base64_string("templates/pg-icon.png"),
         original_uploaded_file_name=original_uploaded_file_name,
         param_frame_rate=param_frame_rate,
         param_output_format=param_output_format,
         param_is_exif_info_captured=param_is_exif_info_captured,
         param_quality=param_quality,
-        exif_json_dict=exif_json_dict)
+        exif_json_dict=exif_json_dict,
+        key_list=key_list,
+        created_at=created_at)
     pdf = pdfkit.from_string(
         rendered, f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/report.pdf")
