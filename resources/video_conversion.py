@@ -7,13 +7,15 @@ import os
 import werkzeug
 import datetime
 from flask_restful import Resource, reqparse
-from flask import request, current_app, json, jsonify, send_file
+from flask import request, current_app, json, jsonify, send_file, render_template
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from db import db
 import subprocess as sp
 import cv2
 from tasks.video_conversion_task import process_video
+import base64
+import pdfkit
 
 
 ALLOWED_EXTENSIONS = {'mp4', 'mov'}
@@ -130,3 +132,60 @@ class SingleVideoConversion(Resource):
             id=id, user_id=get_jwt_identity()).first()
 
         return {'video_conversion': video_conversion.json()}
+
+def image_file_path_to_base64_string(filepath: str) -> str:
+    with open(filepath, 'rb') as f:
+        return base64.b64encode(f.read()).decode()
+
+def generate_pdf_report(
+        panorama_img_path,
+        folder_name,
+        original_uploaded_file_name,
+        param_frame_rate,
+        param_output_format,
+        param_quality,
+        param_is_exif_info_captured,
+        created_at):
+    exif_json = f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/exif.json"
+    exif_json_dict = {}
+    if param_is_exif_info_captured:
+        with open(exif_json, 'r') as file:
+            exif_json_dict = json.loads(file.read())
+
+    key_list = ["FileType", "Duration", "FileSize", "BitDepth", "VideoFrameRate", "Rotation", "XResolution", "YResolution"]
+    rendered = render_template(
+        "report_template.html",
+        img_string=image_file_path_to_base64_string(panorama_img_path),
+        logo=image_file_path_to_base64_string("templates/pg-icon.png"),
+        original_uploaded_file_name=original_uploaded_file_name,
+        param_frame_rate=param_frame_rate,
+        param_output_format=param_output_format,
+        param_is_exif_info_captured=param_is_exif_info_captured,
+        param_quality=param_quality,
+        exif_json_dict=exif_json_dict,
+        key_list=key_list,
+        created_at=created_at)
+
+    return pdfkit.from_string(rendered, f"{current_app.config['OUTPUT_FOLDER']}/{folder_name}/report_preview.pdf")
+
+class ReportPreview(Resource):
+
+    def get(self, id):
+        video_conversion = VideoConversionModel.query.filter_by(id=id).first()
+        output_dir = f"{current_app.config['OUTPUT_FOLDER']}/{video_conversion.id}"
+        file_name = f"{video_conversion.id}.{video_conversion.param_output_format}"
+        pdf = generate_pdf_report(
+            f"{output_dir}/{file_name}",
+            video_conversion.id,
+            video_conversion.original_uploaded_file_name,
+            video_conversion.param_frame_rate,
+            video_conversion.param_output_format,
+            video_conversion.param_quality,
+            video_conversion.param_is_exif_info_captured,
+            video_conversion.created_at
+        )
+
+        preview_report_path = os.path.join(
+            current_app.config['OUTPUT_FOLDER'], f"{video_conversion.id}/report_preview.pdf")
+
+        return send_file(preview_report_path, as_attachment=True)

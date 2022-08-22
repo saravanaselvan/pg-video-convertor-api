@@ -5,33 +5,97 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Report</title>
+  <style>
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";      
+      font-size: 18px;
+      width: 90%;
+      margin: auto;
+    }
+    .yaml-key {
+      color: brown;
+    }
+    .blue {
+      color: blue;
+    }
+    .green {
+      color: green;
+    }
+    .input-yaml {
+      line-height: 1.5;
+      /* width: 50%;
+      margin: auto; */
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+    header div {
+      display: flex;
+      align-items: center;
+      justify-content: center;      
+    }
+    header h2 {
+      margin: 0;
+      padding: 0;
+      margin-left: 1rem;
+    }
+    header small {
+      position: absolute;
+      right: 0;
+      top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Summary</h1>
+  <header>
+    <div>
+    <img src="data:image/png;base64,{{ logo }}" width="50" height="50"/>
+  <h2>Video Summary</h1>
+  </div>
+    <small>{{ created_at.strftime('%d-%m-%Y %H:%M:%S')}}</small>
+</header>
   <h2>Input</h2>
-  <div>input_file_name: {{ original_uploaded_file_name }}</div>
-  <div>params:</div>
-  <div>&nbsp;&nbsp; frame_rate: {{param_frame_rate}}</div>
-  <div>&nbsp;&nbsp; output_format: {{param_output_format}}</div>
-  <div>&nbsp;&nbsp; quality: {{param_quality}}</div>  
-  <div>&nbsp;&nbsp; exif_info_captured: 
-    {%- if param_is_exif_info_captured %} 
-        Yes 
-    {%- else %} 
-        No
-    {%- endif %}
+  <div>
+    <div class="input-yaml">
+      <div><span class="yaml-key">input_file_name:</span> <span class="blue">{{ original_uploaded_file_name }}</span></div>
+      <div><span class="yaml-key">params:</span></div>
+      <div>&nbsp;&nbsp; <span class="yaml-key">frame_rate:</span> <span class="green">{{param_frame_rate}}</span></div>
+      <div>&nbsp;&nbsp; <span class="yaml-key">output_format:</span> <span class="blue">{{param_output_format}}</span></div>
+      <div>&nbsp;&nbsp; <span class="yaml-key">quality:</span> <span class="blue">{{param_quality}}</span></div>  
+      <div>&nbsp;&nbsp; <span class="yaml-key">exif_info_captured:</span> 
+        <span class="blue">
+        {%- if param_is_exif_info_captured %} 
+            Yes 
+        {%- else %} 
+            No
+        {%- endif %}
+      </span>
+      </div>
+    </div>
   </div>
   <br /><br />
   <h2>Output</h2>
-  <img src="data:image/png;base64,{{ img_string }}"/>
+  <div style="text-align:center">
+    <img src="data:image/png;base64,{{ img_string }}"/>
+  </div>
   <br /><br />
   {%- if param_is_exif_info_captured %} 
-    <ul>
+    <h2>EXIF Data</h2>
+    <ul style="list-style:none;line-height:1.75;margin:0;padding:0;">
       {% for key in exif_json_dict %}
-        <li>
-          <span><strong>{{key}} :&nbsp;</strong></span>
-          {{ exif_json_dict[key] }}
-        </li>
+        {%- if key in key_list: %}
+          <li>
+            <span><strong>{{key}} :&nbsp;</strong></span>
+            {{ exif_json_dict[key] }}
+          </li>
+        {%-endif %}
       {% endfor %}
     </ul>
   {%- endif %}
